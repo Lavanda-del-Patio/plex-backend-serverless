@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lavanda-plex-backend-serverless
+Globals:
+  Function:
+    Timeout: 60
+Resources:
+  MoviesFunction:
+    Type: AWS::Serverless::Function 
+    Properties:
+      CodeUri: movies/
+      Handler: app.lambda_handler
+      FunctionName: plex-library-api
+      Runtime: python3.8
+      Events:
+        Films:
+          Type: HttpApi 
+          Properties:
+            Path: /
+            Method: get
+Outputs:
+  MoviesApi:
+    Description: "API Gateway endpoint URL for Prod stage for Movies function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  MoviesFunction:
+    Description: "MoviesFunction Lambda Function ARN"
+    Value: !GetAtt MoviesFunction.Arn
+  MoviesFunctionIamRole:
+    Description: "Implicit IAM Role created for MoviesFunction function"
+    Value: !GetAtt MoviesFunctionRole.Arn
